@@ -318,6 +318,10 @@ bool EDTCompiler::TokenizeInput(
                                 (IsValidKeyword(tok.pStr, &tok.number)) ? TOKEN_KEYWORD :
                                 (IsValidCommand(tok.pStr, &tok.number)) ? TOKEN_COMMAND :
                                 TOKEN_IDENTIFIER;
+                            if (tok.pStr == "PARENT") {
+                                tok.kind = TOKEN_COMMAND;
+                                tok.number = PARENT;
+                            }
                             if (g_ArithFunc.find(tok.pStr) != g_ArithFunc.end()) {
                                 tok.kind = TOKEN_ARITHF;
                                 tok.number = g_ArithFunc[tok.pStr];
@@ -513,7 +517,10 @@ bool ProcessCommonCmdData(
     size_t size = tokens.size();
     try {
         //Used to look at reference for arguments
-        ECLInstructionDefine def = g_InstructionSize[command];
+        ECLInstructionDefine def;
+        if (command == PARENT)
+            def = { "", {COMMAND, U8} };
+        else def = g_InstructionSize[command];
 
         //Instruction and how many parameters it has
         Token cmd;
@@ -524,10 +531,21 @@ bool ProcessCommonCmdData(
         int num_args = def.paramdatatype.size() - 1;
         Token cnt;
         cnt.kind = TOKEN_INCOUNT;
-        cnt.number = num_args;
+        cnt.number = num_args + (command == PARENT);
 
         pProcessedData->emplace_back(cmd);
         pProcessedData->emplace_back(cnt);
+
+        if (command == PARENT) {
+            Token rg;
+            rg.advance = 1;
+            rg.number = 0x2a;
+            rg.kind = TOKEN_NUMBER;
+            rg.line = tokens[idx].line;
+            rg.source = tokens[idx].source;
+            pProcessedData->emplace_back(rg);
+        }
+
         idx++;
         if (idx + (num_args) * 2 - 1 < size) {
             for (int x = num_args, y = 0; x > 0;) {
@@ -1546,9 +1564,10 @@ void* EDTCompiler::JoinData()
             switch (data.cmd) {
             case PARENT:
                 pData[idx] = char(data.param[0].sdword % 0x100);
-                pData[idx + 1] = data.cmd;
+                pData[idx + 1] = PUSHR;
                 pData[idx + 2] = char(data.param[1].sdword % 0x100);
-                idx += 2;
+                idx += 3;
+                break;
             case PUSHR:
             case POPR:
             case MOVC:
