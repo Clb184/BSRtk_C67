@@ -6,9 +6,11 @@
 void PrintUsage(const char* exe) {
 	printf("Usage: %s\n"
 	"	ed file.edt (Dump EDT)\n"
-	"	ec source output.edt <- in pairs (Compile EDT)\n"
-	"	sd sound.def (Dump Sound defs)\n"
-	"	sc input.json output.def (Dump Sound defs)\n"
+	"	ec source output.edt <- in pairs (Compile EDT)\n\n"
+	"	sd sound.def (Dump Sound def)\n"
+	"	sc input.json output.def <- in pairs (Compile Sound defs)\n\n"
+	"	pd input.ptn (Dump Normal PTN)\n"
+	"	pc input.json output.ptn <- in pairs (Compile Normal PTNs)\n\n"
 		, exe);
 }
 
