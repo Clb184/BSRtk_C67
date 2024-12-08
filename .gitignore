@@ -372,4 +372,5 @@ FodyWeavers.xsd
 *.code-workspace
 /regs.ods
 /sound.def
+/test.def
 /.~lock.regs.ods#

@@ -3,9 +3,11 @@
 #include "sounddef.hpp"
 
 void PrintUsage(const char* exe) {
-	printf("Usage:\n"
-	"	%s ed file.edt (Dump)\n"
-	"	%s ec source output.edt <- in pairs (Compile)\n",exe,exe);
+	printf("Usage: %s\n"
+	"	ed file.edt (Dump EDT)\n"
+	"	ec source output.edt <- in pairs (Compile EDT)\n"
+	"	sd sound.def (Dump Sound defs)\n"
+		, exe);
 }
 
 int main(int argc, char** argv) {
@@ -24,13 +26,18 @@ int main(int argc, char** argv) {
 		for (int i = 0; i < num_comp; i++) {
 			compiler.Reset();
 			if (!compiler.CompileEDT(argv[2 + i * 2], argv[2 + i * 2 + 1]))
-				printf("Failed compiling %s.\n", argv[2 + i * 2]);
+				printf("Failed compiling EDT %s.\n", argv[2 + i * 2]);
 		}
 	}
 	else if (op == "sd") {
 		DumpSoundDef(argv[2]);
 	}
-	else if (op == "sc") {
+	else if (op == "sc" && !((argc - 2) % 2)) {
+		int num_comp = (argc - 2) / 2;
+		for (int i = 0; i < num_comp; i++) {
+			if (!CompileSoundDef(argv[2 + i * 2], argv[2 + i * 2 + 1]))
+				printf("Failed compiling SoundDef %s.\n", argv[2 + i * 2]);
+		}
 	}
 	else {
 		PrintUsage(argv[0]);
