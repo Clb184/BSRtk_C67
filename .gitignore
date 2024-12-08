@@ -368,6 +368,7 @@ FodyWeavers.xsd
 *.edt
 *.exe
 *.json
+*.ptn
 #also the VS Code workspace
 *.code-workspace
 /regs.ods

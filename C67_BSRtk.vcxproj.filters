@@ -30,6 +30,9 @@
     <ClCompile Include="sounddef.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ptn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utyl.hpp">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sounddef.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ptn.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

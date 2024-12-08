@@ -151,12 +151,14 @@
     <ClCompile Include="edt_compile.cpp" />
     <ClCompile Include="edt_dump.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ptn.cpp" />
     <ClCompile Include="sounddef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc2Token.hpp" />
     <ClInclude Include="edt_compile.hpp" />
     <ClInclude Include="edt_dump.hpp" />
+    <ClInclude Include="ptn.hpp" />
     <ClInclude Include="sounddef.hpp" />
     <ClInclude Include="utyl.hpp" />
   </ItemGroup>

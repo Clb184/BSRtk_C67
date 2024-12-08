@@ -1,6 +1,7 @@
 #include "edt_dump.hpp"
 #include "edt_compile.hpp"
 #include "sounddef.hpp"
+#include "ptn.hpp"
 
 void PrintUsage(const char* exe) {
 	printf("Usage: %s\n"
@@ -41,6 +42,18 @@ int main(int argc, char** argv) {
 		for (int i = 0; i < num_comp; i++) {
 			if (!CompileSoundDef(argv[2 + i * 2], argv[2 + i * 2 + 1])) {
 				printf("Failed compiling SoundDef %s.\n", argv[2 + i * 2]);
+				return -1;
+			}
+		}
+	}
+	else if (op == "pd") {
+		DumpPTN(argv[2]);
+	}
+	else if (op == "pc" && !((argc - 2) % 2)) {
+		int num_comp = (argc - 2) / 2;
+		for (int i = 0; i < num_comp; i++) {
+			if (!CompilePTN(argv[2 + i * 2], argv[2 + i * 2 + 1])) {
+				printf("Failed compiling PTN %s.\n", argv[2 + i * 2]);
 				return -1;
 			}
 		}
