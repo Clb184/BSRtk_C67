@@ -229,6 +229,17 @@ bool EDTCompiler::CompileEDT(
     return success;
 }
 
+void EDTCompiler::Reset()
+{
+    m_Header = { 0, 0 };
+    m_FileSize = 0;
+    m_GlobalConstMap.clear();
+    m_LocalConstMap.clear();
+    m_ProcNames.clear();
+    m_ProcData.clear();
+    m_ProcessedTokens.clear();
+}
+
 bool EDTCompiler::TokenizeInput(
     const char* pSourceFile,
     std::vector<Token>& output_raw

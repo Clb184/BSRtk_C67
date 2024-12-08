@@ -199,7 +199,8 @@ enum ECL_INSTRUCTION : u8 {
 	CMD_8D,
 	ROL,
 
-	ANM = 0x91,
+	CMD_90 = 0x90,
+	ANM,
 	BEGINCALLBACK,
 	ENDCALLBACK,
 	CMD_94,
@@ -245,13 +246,14 @@ enum ECL_INSTRUCTION : u8 {
 	NEWLINE,
 	NEXTSTAGE,
 
-	CMD_E0 = 0xe0,
+	CMD_E0,
 	FADEOUT,
 	CMD_E2,
 	CMD_E3,
 	CMD_E4,
 
 	CMD_F0 = 0xf0,
+	CMD_F1,
 };
 
 struct ECLInstructionData {

@@ -271,6 +271,9 @@ public:
 	//Main function
 	bool CompileEDT(const char* name, const char* output);
 
+	//Delete all subroutine data and clean all
+	void Reset();
+
 private: //Private funcs
 
 	//Tokenize everything

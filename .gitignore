@@ -367,5 +367,9 @@ FodyWeavers.xsd
 *.txt
 *.edt
 *.exe
+*.json
 #also the VS Code workspace
 *.code-workspace
+/regs.ods
+/sound.def
+/.~lock.regs.ods#
