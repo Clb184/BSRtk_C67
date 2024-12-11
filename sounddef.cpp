@@ -20,6 +20,10 @@ bool DumpSoundDef(const char* file) {
         printf("    ]\n");
         printf("}\n");
     }
+    else {
+        printf("Failed opening %s\n", file);
+        success = false;
+    }
     return success;
 }
 

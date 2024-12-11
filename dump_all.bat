@@ -1,1 +1,1 @@
-for %%f in (*.edt) do c67_bsrtk %%f > %%f.txt
+for %%f in (*.edt) do c67_bsrtk ed %%f > %%f.txt

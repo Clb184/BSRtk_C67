@@ -152,3 +152,159 @@ bool CompilePTN(const char* input, const char* output) {
 
 	return success;
 }
+
+bool DumpPlayerPTN(const char* name) {
+	bool success = true;
+	size_t size;
+	if (char* pBuffer = (char*)GetDataFromFile(name, size)) {
+		char* idx = pBuffer;
+		struct {
+			u8 ld;
+			u8 l;
+			u8 lmd;
+			u8 lm;
+			u8 cd;
+			u8 c;
+			u8 rmd;
+			u8 rm;
+			u8 rd;
+			u8 r;
+		} header;
+		memcpy(&header, idx, sizeof(header));
+		idx += sizeof(header);
+		;
+		printf("{\n");
+
+		auto prnt = [&](int del, int rects, const char* name) {
+			printf("\t\"%s\" : {\n", name);
+			printf("\t\t\"delay\" : %d,\n", del);
+			printf("\t\t\"rects\" : [\n");
+			for (int i = 0; i <= rects - 1; i++) {
+				struct {
+					u16 u0;
+					u16 v0;
+					u16 u1;
+					u16 v1;
+				} rc;
+				memcpy(&rc, idx, sizeof(rc));
+				idx += sizeof(rc);
+				printf(
+					"\t\t\t{\n"
+					"\t\t\t\t\"u0\" : %d,\n"
+					"\t\t\t\t\"v0\" : %d,\n"
+					"\t\t\t\t\"u1\" : %d,\n"
+					"\t\t\t\t\"v1\" : %d\n"
+					"\t\t\t}%c\n",
+					rc.u0, rc.v0, rc.u1, rc.v1, (i < rects - 1) ? ',' : ' '
+				);
+			}
+			printf("\t\t]\n");
+			printf("\t}");
+		};
+		prnt(header.ld, header.l, "left-idle"); printf(",\n");
+		prnt(header.lmd, header.lm, "left-move"); printf(",\n");
+		prnt(header.cd, header.c, "idle"); printf(",\n");
+		prnt(header.rmd, header.rm, "right-move"); printf(",\n");
+		prnt(header.rd, header.r, "right-idle"); printf(",\n");
+		printf("\t\"texture\" : \"%s\"\n", idx);
+		printf("}");
+		free(pBuffer);
+	}
+	else {
+		printf("Failed opening %s\n", name);
+		success = false;
+	}
+
+	return false;
+}
+
+bool CompilePlayerPTN(const char* input, const char* output) {
+	bool success = true;
+	std::ifstream src(input);
+	if (!src.is_open()) return false;
+	nlohmann::json json = nlohmann::json::parse(src);
+
+	struct RCData {
+		u16 u0;
+		u16 v0;
+		u16 u1;
+		u16 v1;
+	};
+
+	struct {
+		u8 ld;
+		u8 l;
+		u8 lmd;
+		u8 lm;
+		u8 cd;
+		u8 c;
+		u8 rmd;
+		u8 rm;
+		u8 rd;
+		u8 r;
+	} header;
+
+	std::vector<RCData> left;
+	std::vector<RCData> left_move;
+	std::vector<RCData> center;
+	std::vector<RCData> right_move;
+	std::vector<RCData> right;
+	std::string tex_name;
+
+	try {
+
+
+		auto GetStateAnimData = [&](const char* name, u8& num_rcs, u8& delay, std::vector<RCData>& target) {
+			const auto& block = json[name];
+			delay = block["delay"];
+			num_rcs = block["rects"].size();
+			for (auto& rec : block["rects"]) {
+				target.emplace_back(rec["u0"], rec["v0"], rec["u1"], rec["v1"]);
+			}
+		};
+
+		GetStateAnimData("left-idle", header.l, header.ld, left);
+		GetStateAnimData("left-move", header.lm, header.lmd, left_move);
+		GetStateAnimData("idle", header.c, header.cd, center);
+		GetStateAnimData("right-move", header.rm, header.rmd, right_move);
+		GetStateAnimData("right-idle", header.r, header.rd, right);
+		tex_name = json["texture"];
+	}
+	catch (const std::exception& e) {
+		printf("An error ocurred: %s.\n", e.what());
+		success = false;
+	}
+	if (success) {
+		const size_t ln = tex_name.length();
+		const size_t offset_to_tex = 
+			sizeof(header) +
+			(left.size() + left_move.size() + center.size() + right_move.size() + right.size()) * sizeof(RCData);
+		const size_t out_size = offset_to_tex +	ln + 1;
+
+		char* pBuffer = (char*)malloc(out_size);
+		memcpy(pBuffer, &header, sizeof(header));
+		size_t off = sizeof(header);
+		memcpy(pBuffer + off, left.data(), left.size() * sizeof(RCData));
+		off += left.size() * sizeof(RCData);
+		memcpy(pBuffer + off, left_move.data(), left_move.size() * sizeof(RCData));
+		off += left_move.size() * sizeof(RCData);
+		memcpy(pBuffer + off, center.data(), center.size() * sizeof(RCData));
+		off += center.size() * sizeof(RCData);
+		memcpy(pBuffer + off, right_move.data(), right_move.size() * sizeof(RCData));
+		off += right_move.size() * sizeof(RCData);
+		memcpy(pBuffer + off, right.data(), right.size() * sizeof(RCData));
+		off += right.size() * sizeof(RCData);
+		memcpy(pBuffer + off, tex_name.data(), ln);
+		//Write data to file
+		if (FILE* fp = fopen(output, "wb")) {
+			fwrite(pBuffer, out_size, 1, fp);
+			fclose(fp);
+		}
+		else {
+			printf("Failed writing file.\n");
+			success = false;
+		}
+		free(pBuffer);
+	}
+	return success;
+}

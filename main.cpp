@@ -60,6 +60,18 @@ int main(int argc, char** argv) {
 			}
 		}
 	}
+	else if (op == "ppd") {
+		DumpPlayerPTN(argv[2]);
+	}
+	else if (op == "ppc" && !((argc - 2) % 2)) {
+		int num_comp = (argc - 2) / 2;
+		for (int i = 0; i < num_comp; i++) {
+			if (!CompilePlayerPTN(argv[2 + i * 2], argv[2 + i * 2 + 1])) {
+				printf("Failed compiling PTN %s.\n", argv[2 + i * 2]);
+				return -1;
+			}
+		}
+	}
 	else {
 		PrintUsage(argv[0]);
 	}

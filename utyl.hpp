@@ -223,13 +223,13 @@ enum ECL_INSTRUCTION : u8 {
 
 	DEGS = 0xb0,
 	CMD_B1,
-	CMD_B2,
+	DEGSDEL,
 	CMD_B3,
 	HPINT,
 
 	CMD_C0 = 0xc0,
 
-	CMD_D0 = 0xd0,
+	PSE = 0xd0,
 	MUSIC,
 	WARNING,
 	FOG,
@@ -385,7 +385,7 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 
 	ECL_INS(NOPMOV,  ({COMMAND, U16})), //Move using current speed and angle for x frames
 	ECL_INS(CMD_82,  ({COMMAND, U32, U16})), //?
-	ECL_INS(CMD_83,  ({COMMAND, U8, U16})),//Move with current speed, using x direction for x frames
+	ECL_INS(CMD_83,  ({COMMAND, U8, U16})),//Move with current speed, using x direction for y frames
 	ECL_INS(CMD_84,  ({COMMAND, U8, U32, U16})), //Move adding x angle, at y speed for z frames
 	ECL_INS(CMD_85,  ({COMMAND, U16})), //Move with current speed, accelerating by current acceleration for x frames
 	ECL_INS(ACC,  ({COMMAND, U32, U32, U16})), //Move with current angle, x as initial speed, accelerating by y for z frames
@@ -419,13 +419,13 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 
 	ECL_INS(DEGS,  ({COMMAND})),
 	ECL_INS(CMD_B1,  ({COMMAND})),
-	ECL_INS(CMD_B2,  ({COMMAND, I8})),
+	ECL_INS(DEGSDEL,  ({COMMAND, I8})), //Degs but uses x angle to get to you
 	ECL_INS(CMD_B3,  ({COMMAND, U16, U16, U16})),
 	ECL_INS(HPINT,  ({COMMAND, ADDRESS})),
 
 	ECL_INS(CMD_C0,  ({COMMAND})),
 
-	ECL_INS(CMD_D0,  ({COMMAND, U8})),
+	ECL_INS(PSE,  ({COMMAND, U8})),
 	ECL_INS(MUSIC,  ({COMMAND, U8})),
 	ECL_INS(WARNING,  ({COMMAND, U8})),
 	ECL_INS(FOG,  ({COMMAND, U8, U8, U8, U16})),
