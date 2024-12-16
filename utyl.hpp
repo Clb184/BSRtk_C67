@@ -154,7 +154,7 @@ enum ECL_INSTRUCTION : u8 {
 	BITOR,
 	BITNOT,
 	ABS,
-	CMD_56,
+	PUSHFROMTASK,
 	RGBMAKE,
 	RGBAMAKE, 
 	CMD_59,
@@ -170,16 +170,16 @@ enum ECL_INSTRUCTION : u8 {
 	ATK,
 
 	BOSS,
-	CMD_68,
+	BOSS2,
 	ENEMYEX,
-	CMD_6A,
-	CMD_6B,
-	CMD_6C,
+	ENEMYEX2,
+	ENEMYEX3,
+	ENEMYEX4,
 
 	CMD_70 = 0x70,
 	CHILD,
 	CMD_72,
-	CMD_73,
+	CHILDCIRCLE,
 	CMD_74,
 	CMD_75,
 
@@ -205,19 +205,19 @@ enum ECL_INSTRUCTION : u8 {
 	ENDCALLBACK,
 	CMD_94,
 	TAMA,
-	CMD_96,
-	CMD_97,
-	CMD_98,
-	CMD_99,
+	SLASER,
+	HLASER,
+	LLBEGIN,
+	LLCLOSE,
 	CMD_9A,
-	CMD_9B,
-	CMD_9C,
+	LLOPEN,
+	LLEND,
 	CMD_9D,
 	CMD_9E,
 	CMD_9F,
 
-	CMD_A0,
-	CMD_A1,
+	MOVEPOSLINEAR,
+	MOVEPOSSMOOTH,
 	CMD_A2,
 	CMD_A3,
 
@@ -249,7 +249,7 @@ enum ECL_INSTRUCTION : u8 {
 	CMD_E0,
 	FADEOUT,
 	CMD_E2,
-	CMD_E3,
+	BGCMD,
 	CMD_E4,
 
 	CMD_F0 = 0xf0,
@@ -351,7 +351,7 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 	ECL_INS(BITNOT,		({COMMAND})),
 	ECL_INS(ABS,		({COMMAND})),
 
-	ECL_INS(CMD_56, ({COMMAND, U8})),
+	ECL_INS(PUSHFROMTASK, ({COMMAND, U8})),
 
 	ECL_INS(RGBMAKE, ({COMMAND})),
 	ECL_INS(RGBAMAKE, ({COMMAND})),
@@ -368,16 +368,16 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 	ECL_INS(ENEMY3, ({COMMAND, I8, I16, ADDRESS})),
 	ECL_INS(ATK, ({COMMAND, I16, I16, ADDRESS})),
 	ECL_INS(BOSS, ({COMMAND, I16, I16, I32, ADDRESS})),
-	ECL_INS(CMD_68, ({COMMAND, I16, I16, I32, ADDRESS})),
+	ECL_INS(BOSS2, ({COMMAND, I16, I16, I32, ADDRESS})),
 	ECL_INS(ENEMYEX, ({COMMAND, ADDRESS})),
-	ECL_INS(CMD_6A, ({COMMAND, ADDRESS})),
-	ECL_INS(CMD_6B, ({COMMAND, ADDRESS})),
-	ECL_INS(CMD_6C, ({COMMAND, ADDRESS})),
+	ECL_INS(ENEMYEX2, ({COMMAND, ADDRESS})),
+	ECL_INS(ENEMYEX3, ({COMMAND, ADDRESS})),
+	ECL_INS(ENEMYEX4, ({COMMAND, ADDRESS})),
 
 	ECL_INS(CMD_70, ({COMMAND, U16, U16, U8, ADDRESS})),
 	ECL_INS(CHILD, ({COMMAND, I8, U16, U8, ADDRESS})),
 	ECL_INS(CMD_72, ({COMMAND, U16, U16, U8, ADDRESS})),
-	ECL_INS(CMD_73, ({COMMAND, U8, U16, U8, ADDRESS})),
+	ECL_INS(CHILDCIRCLE, ({COMMAND, U8, U16, U8, ADDRESS})),
 	ECL_INS(CMD_74, ({COMMAND, U8})),
 	ECL_INS(CMD_75, ({COMMAND})),
 
@@ -391,8 +391,8 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 	ECL_INS(ACC,  ({COMMAND, U32, U32, U16})), //Move with current angle, x as initial speed, accelerating by y for z frames
 	ECL_INS(CMD_88,  ({COMMAND, U8, U32, U32, U16})),
 	ECL_INS(CMD_89,  ({COMMAND, U16})),
-	ECL_INS(CMD_8B,  ({COMMAND, U32, U16})),
-	ECL_INS(CMD_8C,  ({COMMAND, U8, U32, U16})),
+	ECL_INS(CMD_8B,  ({COMMAND, U32, U16})), //Move with current angle, starting with x velocity for 180 seconds while interpolating x to 0
+	ECL_INS(CMD_8C,  ({COMMAND, U8, U32, U16})), //Move with x angle at y speed for z frames
 	ECL_INS(CMD_8D,  ({COMMAND, U16})),
 	ECL_INS(ROL,  ({COMMAND, I8, U16})), //Move with current speed, adding x angle for y frames
 
@@ -401,19 +401,20 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 	ECL_INS(ENDCALLBACK,  ({COMMAND, ADDRESS})),
 	ECL_INS(CMD_94,  ({COMMAND})),
 	ECL_INS(TAMA,  ({COMMAND})),
-	ECL_INS(CMD_96,  ({COMMAND})),
-	ECL_INS(CMD_97,  ({COMMAND})),
-	ECL_INS(CMD_98,  ({COMMAND})),
-	ECL_INS(CMD_99,  ({COMMAND, U16})),
+	ECL_INS(SLASER,  ({COMMAND})),
+	ECL_INS(HLASER,  ({COMMAND})),
+	ECL_INS(LLBEGIN,  ({COMMAND})),
+	ECL_INS(LLCLOSE,  ({COMMAND, U16})),
+	ECL_INS(CMD_9A,  ({COMMAND, U16})),
 
-	ECL_INS(CMD_9B,  ({COMMAND, U16, U16})),
-	ECL_INS(CMD_9C,  ({COMMAND, U16})),
+	ECL_INS(LLOPEN,  ({COMMAND, U16, U16})),	
+	ECL_INS(LLEND,  ({COMMAND, U16})),
 	ECL_INS(CMD_9D,  ({COMMAND})),
 	ECL_INS(CMD_9E,  ({COMMAND})),
 	ECL_INS(CMD_9F,  ({COMMAND})),
 
-	ECL_INS(CMD_A0,  ({COMMAND, U16, U16, U16})),
-	ECL_INS(CMD_A1,  ({COMMAND, U16, U16, U16})), //is it something like length?
+	ECL_INS(MOVEPOSLINEAR,  ({COMMAND, U16, U16, U16})),
+	ECL_INS(MOVEPOSSMOOTH,  ({COMMAND, U16, U16, U16})), //is it something like length?
 	ECL_INS(CMD_A2,  ({COMMAND})), //is it something like length?
 	ECL_INS(CMD_A3,  ({COMMAND})), //is it something like length?
 
@@ -445,7 +446,7 @@ static std::map<ECL_INSTRUCTION, ECLInstructionDefine> g_InstructionSize = {
 	ECL_INS(CMD_E0,  ({COMMAND})),
 	ECL_INS(FADEOUT,  ({COMMAND})),
 	ECL_INS(CMD_E2,  ({COMMAND})),
-	ECL_INS(CMD_E3,  ({COMMAND, U8})),
+	ECL_INS(BGCMD,  ({COMMAND, U8})),
 	ECL_INS(CMD_E4,  ({COMMAND, STRING, U16, U8, U8, U8})),
 
 	//ECL_INS(CMD_F0,  ({COMMAND, STRING, U16, U8, U8, U8})),

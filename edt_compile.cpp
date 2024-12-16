@@ -1503,9 +1503,9 @@ bool EDTCompiler::PopulateAddresses()
                 }break;
                 case CALL:
                 case ENEMYEX:
-                case CMD_6A:
-                case CMD_6B:
-                case CMD_6C:
+                case ENEMYEX2:
+                case ENEMYEX3:
+                case ENEMYEX4:
                 case HPINT:
                 {
                     const string& str = c.param[0].stringdata;
@@ -1526,11 +1526,11 @@ bool EDTCompiler::PopulateAddresses()
                     else throw SourceInfo{ "", str, c.line};
                 }break;
                 case BOSS:
-                case CMD_68:
+                case BOSS2:
                 case CMD_70:
                 case CHILD:
                 case CMD_72:
-                case CMD_73:
+                case CHILDCIRCLE:
                 {
                     const string& str = c.param[3].stringdata;
                     if (m_ProcData.find(str) != m_ProcData.end())

@@ -266,6 +266,7 @@ static valid_instruction_set g_SetCheck = {
 
 class EDTCompiler {
 public:
+	//Basic constructor for the EDT Compiler
 	EDTCompiler();
 
 	//Main function

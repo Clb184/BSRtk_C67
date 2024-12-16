@@ -271,7 +271,7 @@ bool ParseTexInit(unsigned char* data, size_t& ind) {
 				memcpy(&rc, data, sizeof(rc));
 				data += sizeof(rc);
 				idx += sizeof(rc);
-				printf("RECT %d, %d, %d, %d", rc.x0, rc.y0, rc.x1, rc.y1);
+				printf("RECT %d, %d, %d, %d ;Rect n %d", rc.x0, rc.y0, rc.x1, rc.y1, rc_cnt);
 				rc_cnt++;
 			}
 			break;
@@ -288,7 +288,6 @@ bool ParseTexInit(unsigned char* data, size_t& ind) {
 				data += 2;
 				idx += 2;
 				printf("ANIME %d, %d, ", (short)x, (short)y);
-				anm_cnt++;
 				while (*data != 0xff) {
 					printf("%d", *data);
 					data++;
@@ -297,6 +296,8 @@ bool ParseTexInit(unsigned char* data, size_t& ind) {
 						printf(", ");
 					}
 				}
+				printf(" ; anm n %d", anm_cnt);
+				anm_cnt++;
 				data++;
 				idx++;
 			}
@@ -313,7 +314,7 @@ bool ParseTexInit(unsigned char* data, size_t& ind) {
 				memcpy(&rc, data, sizeof(rc));
 				data += sizeof(rc);
 				idx += sizeof(rc);
-				printf("HITRECT %d, %d, %d, %d", (short)rc.x0, (short)rc.y0, rc.x1, rc.y1);
+				printf("HITRECT %d, %d, %d, %d ;hitrect n %d", (short)rc.x0, (short)rc.y0, rc.x1, rc.y1, hb_cnt);
 				hb_cnt++;
 			}
 			break;
@@ -325,7 +326,7 @@ bool ParseTexInit(unsigned char* data, size_t& ind) {
 				short h = *(short*)data;
 				data += 2;
 				idx += 2;
-				printf("HITRECT2 %d, %d", w, h);
+				printf("HITRECT2 %d, %d ;hitrect n %d", w, h, hb_cnt);
 				hb_cnt++;
 			}
 		}
@@ -344,7 +345,7 @@ bool PrintEDT() {
 			const char* proc_name = "Proc";
 			switch (it->second.type) {
 			case PROC_EXANM: proc_name = "ExAnm"; break;
-			case PROC_BOSS: proc_name = "Boss"; break;
+			case PROC_BOSS: proc_name = "Enemy"; break;
 			case PROC_ENEMY: proc_name = "Enemy"; break;
 			case PROC_ATK: proc_name = "TSet"; break;
 			case PROC_SET: proc_name = "Set"; break;

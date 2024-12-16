@@ -11,6 +11,8 @@ void PrintUsage(const char* exe) {
 	"	sc input.json output.def <- in pairs (Compile Sound defs)\n\n"
 	"	pd input.ptn (Dump Normal PTN)\n"
 	"	pc input.json output.ptn <- in pairs (Compile Normal PTNs)\n\n"
+	"	ppd input.ptn (vivit.ptn or miko.ptn, this is for Player PTN, see more on json)\n\n"
+	"	ppc input.json output.ptn <- in pairs (Compile Player PTNs)\n\n"
 		, exe);
 }
 
